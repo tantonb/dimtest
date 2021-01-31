@@ -1,0 +1,5 @@
+{
+  "block.dimtest.cave_portal": "Cave Dimension Portal",
+  "block.dimtest.altover_portal": "Alternate Overworld Portal",
+  "message.wrong_dimension": "The portal does not work in this dimension"
+}

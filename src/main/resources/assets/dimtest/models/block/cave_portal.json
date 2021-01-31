@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "up": "block/oak_log_top",
+    "down": "block/oak_log_top",
+    "north": "dimtest:block/teleporter_side",
+    "south": "dimtest:block/teleporter_side",
+    "east": "dimtest:block/teleporter_side",
+    "west": "dimtest:block/teleporter_side",
+    "particle": "dimtest:block/teleporter_side"
+  }
+}

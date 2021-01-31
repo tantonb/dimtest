@@ -1,0 +1,15 @@
+{
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "dimtest:altover",
+    "seed": -1,
+    "biome_source": {
+      "seed": 0,
+      "biomes": [ "minecraft:plains", "minecraft:forest" ],
+      "type": "minecraft:vanilla_layered",
+      "large_biomes": false,
+      "legacy_biome_init_layer": false
+    }
+  },
+  "type": "dimtest:altover"
+}

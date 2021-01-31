@@ -1,0 +1,23 @@
+modLoader="javafml"
+loaderVersion="${mod_loader_version}"
+license="mit"
+
+[[mods]]
+    modId="${mod_id}"
+    version="${mod_version}"
+    displayName="${mod_name}"
+    description='''A dimension generation test mod.'''
+
+    [[dependencies.dimtest]]
+        modId="forge"
+        mandatory=true
+        versionRange="${mod_forge_version}"
+        ordering="NONE"
+        side="BOTH"
+
+    [[dependencies.dimtest]]
+        modId="minecraft"
+        mandatory=true
+        versionRange="[${mod_minecraft_version},1.17)"
+        ordering="NONE"
+        side="BOTH"
