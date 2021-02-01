@@ -2,7 +2,6 @@ package net.tantonb.dimtest.blocks;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -17,11 +16,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.ITeleporter;
 import net.tantonb.dimtest.DimTestMod;
 import net.tantonb.dimtest.dimensions.ModDimensions;
-import net.tantonb.dimtest.dimensions.altover.AltoverTeleporter;
-import net.tantonb.dimtest.tileentity.AltoverTE;
+import net.tantonb.dimtest.dimensions.PortalSender;
+import net.tantonb.dimtest.tileentity.AltoverPortalTE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,26 +35,17 @@ public class AltoverPortalBlock extends BasePortalBlock {
 
     private static final Logger LOGGER = LogManager.getLogger(DimTestMod.MODID);
 
-    public RegistryKey<World> getAwayWorldKey() { return ModDimensions.ALTOVER_DIM; }
+    public RegistryKey<World> getWorldKeyB() { return ModDimensions.ALTOVER_DIM; }
 
-    public ITeleporter getTeleporter(BlockPos pos) {
-        return new AltoverTeleporter(pos);
+    public PortalSender getSender(ServerWorld remoteWorld, BlockPos localPos) {
+        return new PortalSender(remoteWorld, localPos, this);
     }
 
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
-    // deprecated in AbstractBlockState...so what's correct way to handle this?
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rtResult) {
-
-        if (!(player instanceof ServerPlayerEntity)) {
-            return ActionResultType.PASS;
-        }
-
-        LOGGER.info("Activating altover teleporter...");
-        player.sendStatusMessage(new StringTextComponent("Activating altover teleporter..."), true);
-        teleport((ServerPlayerEntity) player, pos);
-        return ActionResultType.SUCCESS;
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity entity, Hand hand, BlockRayTraceResult rtResult) {
+        entity.sendStatusMessage(new StringTextComponent("Activating altover teleporter..."), true);
+        return super.onBlockActivated(state, world, pos, entity, hand, rtResult);
     }
 
     /**
@@ -101,7 +90,7 @@ public class AltoverPortalBlock extends BasePortalBlock {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new AltoverTE();
-    }
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) { return new AltoverPortalTE(); }
+
+    public boolean matchesPortalTE(TileEntity te) { return te instanceof AltoverPortalTE; }
 }

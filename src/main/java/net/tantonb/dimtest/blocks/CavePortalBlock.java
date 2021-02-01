@@ -3,7 +3,6 @@ package net.tantonb.dimtest.blocks;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -13,17 +12,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.ITeleporter;
 import net.tantonb.dimtest.DimTestMod;
 import net.tantonb.dimtest.dimensions.ModDimensions;
-import net.tantonb.dimtest.dimensions.TestDim1.CaveTeleporter;
-import net.tantonb.dimtest.tileentity.TestDim1TE;
+import net.tantonb.dimtest.dimensions.PortalSender;
+import net.tantonb.dimtest.tileentity.CavePortalTE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,57 +36,21 @@ public class CavePortalBlock extends BasePortalBlock {
 
     private static final Logger LOGGER = LogManager.getLogger(DimTestMod.MODID);
 
-    public RegistryKey<World> getAwayWorldKey() { return ModDimensions.CAVE_DIM; }
+    public RegistryKey<World> getWorldKeyB() { return ModDimensions.CAVE_DIM; }
 
-    public ITeleporter getTeleporter(BlockPos pos) {
-        return new CaveTeleporter(pos);
+    public PortalSender getSender(ServerWorld remoteWorld, BlockPos localPos) {
+        return new PortalSender(remoteWorld, localPos, this);
     }
 
     public CavePortalBlock() {
         super(Properties.create(Material.WOOD).hardnessAndResistance(3F).sound(SoundType.WOOD));
     }
 
-    @Override
-    protected boolean teleport(ServerPlayerEntity player, BlockPos pos) {
-        if (player.getRidingEntity() != null || player.isBeingRidden()) {
-            return false;
-        }
-
-        if (player.world.getDimensionKey().equals(ModDimensions.CAVE_DIM)) {
-            ServerWorld teleportWorld = player.server.getWorld(World.OVERWORLD);
-            if (teleportWorld == null) {
-                LOGGER.error("Could not find overworld dimension '{}'.", World.OVERWORLD.getRegistryName());
-                return false;
-            }
-            player.changeDimension(teleportWorld, new CaveTeleporter(pos));
-        } else if (player.world.getDimensionKey().equals(World.OVERWORLD)) {
-            ServerWorld teleportWorld = player.server.getWorld(ModDimensions.CAVE_DIM);
-            if (teleportWorld == null) {
-                LOGGER.error("Could not find test dimension 1.");
-                return false;
-            }
-            player.changeDimension(teleportWorld, new CaveTeleporter(pos));
-        } else {
-            player.sendStatusMessage(new TranslationTextComponent("message.wrong_dimension"), true);
-        }
-
-        return true;
-    }
-
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rtResult) {
-
-        // why is this called more than once on click?
-        LOGGER.info("Activating testdim1 teleporter...");
-
-        player.sendStatusMessage(new StringTextComponent("Activating testdim1 teleporter..."), true);
-
-        if (player instanceof ServerPlayerEntity) {
-            teleport((ServerPlayerEntity) player, pos);
-        }
-        return ActionResultType.SUCCESS;
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity entity, Hand hand, BlockRayTraceResult rtResult) {
+        entity.sendStatusMessage(new StringTextComponent("Activating cave dimension teleporter..."), true);
+        return super.onBlockActivated(state, world, pos, entity, hand, rtResult);
     }
 
     /**
@@ -129,13 +90,6 @@ public class CavePortalBlock extends BasePortalBlock {
         world.addParticle(ParticleTypes.SOUL, d0, d1, d2, 0.0D, 0.0D, 0.0D);
     }
 
-    @Nullable
-    @Override
-    @SuppressWarnings("deprecation")
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
-    }
-
     @Override
     public boolean hasTileEntity(BlockState state)
     {
@@ -145,6 +99,8 @@ public class CavePortalBlock extends BasePortalBlock {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TestDim1TE();
+        return new CavePortalTE();
     }
+
+    public boolean matchesPortalTE(TileEntity te) { return te instanceof CavePortalTE; }
 }

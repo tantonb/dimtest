@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.tantonb.dimtest.DimTestMod;
 import net.tantonb.dimtest.blocks.ModBlocks;
 import net.tantonb.dimtest.blocks.BasePortalBlock;
-import net.tantonb.dimtest.tileentity.AltoverTE;
+import net.tantonb.dimtest.tileentity.AltoverPortalTE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,17 +30,17 @@ public class Teleporter implements ITeleporter {
 
     // the starting position of a player to teleport
     private BasePortalBlock fromTeleporter;
-    private BlockPos fromPos;
+    private BlockPos portalPos;
 
-    public Teleporter(BlockPos fromPos) {
-        this.fromPos = fromPos;
+    public Teleporter(BlockPos portalPos) {
+        this.portalPos = portalPos;
     }
 
     private BlockPos findTeleporterInChunk(Chunk chunk) {
 
         // scan tile entities in chunk, return position of first teleporter found
         for (TileEntity tile : chunk.getTileEntityMap().values()) {
-            if (tile instanceof AltoverTE) {
+            if (tile instanceof AltoverPortalTE) {
                 BlockPos pos = tile.getPos();
                 if (chunk.getBlockState(pos.up()).isAir()) {
                     return pos;
@@ -139,7 +139,7 @@ public class Teleporter implements ITeleporter {
         //destPos = findTeleporter(destWorld, fromPos);
 
         // look for existing teleporter near player's position
-        Chunk chunk = (Chunk) destWorld.getChunk(this.fromPos);
+        Chunk chunk = (Chunk) destWorld.getChunk(this.portalPos);
         BlockPos teleporterPos = findTeleporterInChunk(chunk);
         if (teleporterPos == null) {
 
@@ -171,6 +171,10 @@ public class Teleporter implements ITeleporter {
         return fromPos;
     }
 
+    public boolean send(ServerPlayerEntity player) {
+        return true;
+    }
+
     @Override
     public Entity placeEntity(Entity srcEntity, ServerWorld fromWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> createInDest)
     {
@@ -181,12 +185,12 @@ public class Teleporter implements ITeleporter {
         }
 
         // locate destination world arrival position
-        BlockPos destPos = findDestPos(fromPos, destWorld);
+        BlockPos destPos = findDestPos(portalPos, destWorld);
         if (destPos == null) {
             return destEntity;
         }
 
         // return the teleported player entity
-        return teleportPlayer(fromPos, destWorld, (ServerPlayerEntity)destEntity);
+        return teleportPlayer(portalPos, destWorld, (ServerPlayerEntity)destEntity);
     }
 }

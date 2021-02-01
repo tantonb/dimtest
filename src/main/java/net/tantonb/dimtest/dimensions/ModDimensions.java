@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.tantonb.dimtest.DimTestMod;
-import net.tantonb.dimtest.dimensions.TestDim1.CaveChunkGenerator;
+import net.tantonb.dimtest.dimensions.cave.CaveChunkGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

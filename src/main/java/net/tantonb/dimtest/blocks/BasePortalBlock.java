@@ -1,19 +1,28 @@
 package net.tantonb.dimtest.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.ITeleporter;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.tantonb.dimtest.dimensions.PortalSender;
+
+import javax.annotation.Nonnull;
 
 abstract public class BasePortalBlock extends Block {
 
     /*
+        Portal idea notes...
+
         portal variations:
 
             single block
@@ -27,6 +36,8 @@ abstract public class BasePortalBlock extends Block {
                         world/chunk/player/block
 
         portal api:
+
+            setDestination(...) -
 
             isPaired() - requires remote paired portal to operate
             isAutoPairing() - will remote paired portal be automatically created if needed?
@@ -72,15 +83,12 @@ abstract public class BasePortalBlock extends Block {
             hasPower() - has enough power to operate
             getPowerCost() - return power cost per tick
             addPower(...) - add power amount
-            removePower(...) - subtract power amount`
+            removePower(...) - subtract power amount
             getMaxPower(...) - max power storage
 
             send(...) - send entity through portal (player, etc.)
 
     */
-
-    private RegistryKey<World> srcWorld;
-    private RegistryKey<World> destWorld;
 
     public BasePortalBlock(Properties properties) {
         super(properties);
@@ -90,47 +98,90 @@ abstract public class BasePortalBlock extends Block {
         this(Properties.create(Material.WOOD).hardnessAndResistance(3F).sound(SoundType.WOOD));
     }
 
-    public RegistryKey<World> getHomeWorldKey() {
+    // defaults world key a to overworld, override as necessary
+    public RegistryKey<World> getWorldKeyA() {
         return World.OVERWORLD;
-    };
-
-    public abstract RegistryKey<World> getAwayWorldKey();
-
-    public abstract ITeleporter getTeleporter(BlockPos pos);
-
-    public boolean isHome(ServerPlayerEntity player) {
-        return player.world.getDimensionKey().equals(getHomeWorldKey());
     }
 
-    public boolean isAway(ServerPlayerEntity player) {
-        return player.world.getDimensionKey().equals(getAwayWorldKey());
-    }
+    public abstract RegistryKey<World> getWorldKeyB();
 
-    protected boolean teleport(ServerPlayerEntity player, BlockPos pos) {
+    private ServerWorld getRemoteWorld(ServerPlayerEntity player) {
 
-        // look for conditions disallowing teleport
-        if (player.getRidingEntity() != null || player.isBeingRidden()) {
-            return false;
-        }
-
-        ServerWorld destWorld = null;
-        RegistryKey<World> destKey = null;
-        if (isHome(player)) {
-            destKey = getAwayWorldKey();
-        } else if (isAway(player)) {
-            destKey = getHomeWorldKey();
+        // determine remote world key based on player's current world
+        RegistryKey<World> localKey = player.world.getDimensionKey();
+        RegistryKey<World> remoteKey;
+        if (localKey.equals(getWorldKeyA())) {
+            remoteKey = getWorldKeyB();
+        } else if (localKey.equals(getWorldKeyB())) {
+            remoteKey = getWorldKeyA();
         } else {
-            LOGGER.info("Attempt to use teleporter from invalid world");
-            return false;
-        }
-        destWorld = player.server.getWorld(destKey);
-        if (destWorld == null) {
-            LOGGER.error("Could not find destination world '{}'", destKey.getRegistryName());
-            return false;
+            // portals only function between two specific dimensions
+            LOGGER.info(
+                    "Portal block between '{}' and '{}' does not work in player's current world '{}'",
+                    getWorldKeyA().getRegistryName(),
+                    getWorldKeyB().getRegistryName(),
+                    localKey);
+            return null;
         }
 
-        player.changeDimension(destWorld, getTeleporter(pos));
+        // fetch remote world instance using the determined key
+        ServerWorld remoteWorld = player.server.getWorld(remoteKey);
+        if (remoteWorld == null) {
+            LOGGER.error("Could not find destination world '{}'", remoteKey.getRegistryName());
+            return null;
+        }
+        return remoteWorld;
+    }
+
+    private boolean isTeleportAllowed(ServerPlayerEntity player) {
+
+        // look for conditions disallowing teleportation
+        if (player.getRidingEntity() != null) {
+            LOGGER.info("Player may not teleport while riding");
+            return false;
+        } else if (player.isBeingRidden()) {
+            LOGGER.info("Player may not teleport while being ridden");
+            return false;
+        }
         return true;
     }
 
+    // needs to return a dimensional teleporter to manage the actual
+    // teleportation of the player to the remote dimension
+    public abstract PortalSender getSender(ServerWorld remoteWorld, BlockPos localPos);
+
+    protected boolean teleport(ServerPlayerEntity player, BlockPos localPos) {
+
+        // make sure player is allowed to teleport
+        if (!isTeleportAllowed(player)) {
+            return false;
+        }
+
+        // determine remote world to send player to
+        ServerWorld remoteWorld = getRemoteWorld(player);
+        if (remoteWorld == null) {
+            return false;
+        }
+
+        // send player to remote world
+        return getSender(remoteWorld, localPos).send(player);
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings("deprecation")
+    // deprecated in AbstractBlockState...so what's correct way to handle this?
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity entity, Hand hand, BlockRayTraceResult rtResult) {
+
+        // pass if this is not on the server (?)
+        if (!(entity instanceof ServerPlayerEntity)) {
+            return ActionResultType.PASS;
+        }
+
+        // teleport player to remote world
+        ServerPlayerEntity player = (ServerPlayerEntity)entity;
+        return teleport(player, pos) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+    }
+
+    public abstract boolean matchesPortalTE(TileEntity te);
 }

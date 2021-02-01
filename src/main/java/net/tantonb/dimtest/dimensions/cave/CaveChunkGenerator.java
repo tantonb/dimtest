@@ -1,4 +1,4 @@
-package net.tantonb.dimtest.dimensions.TestDim1;
+package net.tantonb.dimtest.dimensions.cave;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
