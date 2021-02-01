@@ -3,15 +3,17 @@ buildscript {
         maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
+        maven {url='https://dist.creeper.host/Sponge/maven'}
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
-//apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
 
 version = mod_version
 group = mod_package_name
@@ -27,12 +29,15 @@ minecraft {
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
+
         client {
             workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'info'
-            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+                arg "-mixin.config=dimtest.mixins.json"
+                property 'forge.logging.console.level', 'info'
+                //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
             mods {
-                mod_id {
+                dimtest {
                     source sourceSets.main
                 }
             }
@@ -40,10 +45,11 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+                property 'forge.logging.console.level', 'debug'
+                //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
             mods {
-                mod_id {
+                dimtest {
                     source sourceSets.main
                 }
             }
@@ -51,11 +57,12 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+                property 'forge.logging.console.level', 'debug'
+                //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+                args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
             mods {
-                mod_id {
+                dimtest {
                     source sourceSets.main
                 }
             }
@@ -79,7 +86,8 @@ jar {
             "Implementation-Title": mod_name,
             "Implementation-Version": mod_version,
             "Implementation-Vendor" :mod_vendor,
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "MixinConfigs": "dimtest.mixins.json"
         ])
     }
 }
@@ -121,4 +129,8 @@ publishing {
             url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
+}
+
+mixin {
+    add sourceSets.main, "dimtest.refmap.json"
 }

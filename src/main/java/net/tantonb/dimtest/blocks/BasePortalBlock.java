@@ -150,7 +150,7 @@ abstract public class BasePortalBlock extends Block {
     // teleportation of the player to the remote dimension
     public abstract PortalSender getSender(ServerWorld remoteWorld, BlockPos localPos);
 
-    protected boolean teleport(ServerPlayerEntity player, BlockPos localPos) {
+    protected boolean send(ServerPlayerEntity player, BlockPos localPos) {
 
         // make sure player is allowed to teleport
         if (!isTeleportAllowed(player)) {
@@ -180,7 +180,7 @@ abstract public class BasePortalBlock extends Block {
 
         // teleport player to remote world
         ServerPlayerEntity player = (ServerPlayerEntity)entity;
-        return teleport(player, pos) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+        return send(player, pos) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
     }
 
     public abstract boolean matchesPortalTE(TileEntity te);
