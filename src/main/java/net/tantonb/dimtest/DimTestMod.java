@@ -6,7 +6,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.tantonb.dimtest.blocks.ModBlocks;
+import net.tantonb.dimtest.config.ClientConfig;
 import net.tantonb.dimtest.config.DimTestConfig;
+import net.tantonb.dimtest.config.ServerConfig;
 import net.tantonb.dimtest.dimensions.ModDimensions;
 import net.tantonb.dimtest.items.ModItems;
 import net.tantonb.dimtest.tileentity.ModTileEntities;
@@ -20,14 +22,14 @@ public class DimTestMod
 
     private static final Logger LOGGER = LogManager.getLogger(MODID);
 
+    public static ServerConfig SERVER_CONFIG;
+    public static ClientConfig CLIENT_CONFIG;
+
     public DimTestMod() {
         LOGGER.info("DimTestMod instantiation...");
 
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        // load mod configuration
-        DimTestConfig config = DimTestConfig.init();
 
         // mod loading
         modEventBus.addListener(this::setupCommon);
@@ -35,6 +37,12 @@ public class DimTestMod
         ModBlocks.register(modEventBus);
         ModTileEntities.register(modEventBus);
 
+        // load mod configuration
+        DimTestConfig config = DimTestConfig.init();
+        SERVER_CONFIG = config.server;
+        CLIENT_CONFIG = config.client;
+
+        LOGGER.info("client config show custon world warning? {}", CLIENT_CONFIG.showCustomWorldWarning);
     }
 
     private void setupCommon(final FMLCommonSetupEvent event) {

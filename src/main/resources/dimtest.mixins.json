@@ -4,5 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "dimtest.refmap.json",
   "mixins": [],
+  "client": [
+    "MinecraftMixin"
+  ],
   "minVersion": "0.8"
 }

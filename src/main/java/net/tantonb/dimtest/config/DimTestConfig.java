@@ -6,7 +6,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.nio.file.Path;
 import java.util.Objects;
 
 public class DimTestConfig {
@@ -15,26 +14,33 @@ public class DimTestConfig {
 
     private static DimTestConfig instance;
 
-    private ForgeConfigSpec spec;
+    private ForgeConfigSpec serverSpec;
+    private ForgeConfigSpec clientSpec;
 
-    public final CommonConfig common;
+    public final ServerConfig server;
+    public final ClientConfig client;
 
     private DimTestConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        this.common = new CommonConfig(builder);
-        this.spec = builder.build();
+        server = new ServerConfig(builder);
+        serverSpec = builder.build();
+
+        builder = new ForgeConfigSpec.Builder();
+        client = new ClientConfig(builder);
+        clientSpec = builder.build();
     }
 
     /**
      * Called during mod loading to generate a config instance containing config data.
-     *
+     *♠
      * @return the generated config singleton instance
      */
     public static DimTestConfig init() {
         if (instance == null) {
             LOGGER.info("Initializing configuration...");
             instance = new DimTestConfig();
-            ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, instance.spec, "dimtest.toml");
+            ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, instance.serverSpec, "dimtest.toml");
+            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, instance.clientSpec, "dimtest-client.toml");
         }
         else {
             LOGGER.warn("Attempt to reinitialize DimTestConfig ignored...");
