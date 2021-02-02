@@ -3,7 +3,9 @@
   "package": "net.tantonb.dimtest.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "dimtest.refmap.json",
-  "mixins": [],
+  "mixins": [
+    "MinecraftServerMixin"
+  ],
   "client": [
     "MinecraftMixin"
   ],
