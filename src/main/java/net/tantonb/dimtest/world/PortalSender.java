@@ -1,4 +1,4 @@
-package net.tantonb.dimtest.dimensions;
+package net.tantonb.dimtest.world;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -10,7 +10,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.ITeleporter;
 import net.tantonb.dimtest.DimTestMod;
 import net.tantonb.dimtest.blocks.BasePortalBlock;
-import net.tantonb.dimtest.blocks.ModBlocks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

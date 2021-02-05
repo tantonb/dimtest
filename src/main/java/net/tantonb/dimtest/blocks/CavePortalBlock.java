@@ -18,8 +18,8 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.tantonb.dimtest.DimTestMod;
-import net.tantonb.dimtest.dimensions.ModDimensions;
-import net.tantonb.dimtest.dimensions.PortalSender;
+import net.tantonb.dimtest.world.ModDimensions;
+import net.tantonb.dimtest.world.PortalSender;
 import net.tantonb.dimtest.tileentity.CavePortalTE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +36,7 @@ public class CavePortalBlock extends BasePortalBlock {
 
     private static final Logger LOGGER = LogManager.getLogger(DimTestMod.MODID);
 
-    public RegistryKey<World> getWorldKeyB() { return ModDimensions.CAVE_DIM; }
+    public RegistryKey<World> getWorldKeyB() { return ModDimensions.RK_CAVE_WORLD; }
 
     public PortalSender getSender(ServerWorld remoteWorld, BlockPos localPos) {
         return new PortalSender(remoteWorld, localPos, this);

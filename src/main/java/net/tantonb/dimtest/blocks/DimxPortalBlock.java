@@ -1,6 +1,6 @@
 package net.tantonb.dimtest.blocks;
 
-import net.minecraft.block.*;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
@@ -17,9 +17,9 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.tantonb.dimtest.DimTestMod;
+import net.tantonb.dimtest.tileentity.AltoverPortalTE;
 import net.tantonb.dimtest.world.ModDimensions;
 import net.tantonb.dimtest.world.PortalSender;
-import net.tantonb.dimtest.tileentity.AltoverPortalTE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,11 +31,11 @@ import java.util.Random;
  * Some example mods working in 1.16.5: Advanced Mining Dimension and Ultra Amplified Dimension, both using
  * teleporter blocks.
  */
-public class AltoverPortalBlock extends BasePortalBlock {
+public class DimxPortalBlock extends BasePortalBlock {
 
     private static final Logger LOGGER = LogManager.getLogger(DimTestMod.MODID);
 
-    public RegistryKey<World> getWorldKeyB() { return ModDimensions.RK_ALTOVER_WORLD; }
+    public RegistryKey<World> getWorldKeyB() { return ModDimensions.RK_DIMX_WORLD; }
 
     public PortalSender getSender(ServerWorld remoteWorld, BlockPos localPos) {
         return new PortalSender(remoteWorld, localPos, this);

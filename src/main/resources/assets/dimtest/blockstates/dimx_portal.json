@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "dimtest:block/dimx_portal" }
+  }
+}

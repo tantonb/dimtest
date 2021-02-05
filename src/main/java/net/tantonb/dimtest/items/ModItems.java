@@ -27,8 +27,9 @@ public class ModItems {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, DimTestMod.MODID);
 
-    public static final RegistryObject<Item> TESTDIM1_TELEPORTER = register("testdim1_teleporter", () -> new BlockItem(ModBlocks.CAVE_PORTAL.get(), new Item.Properties().group(DIMTEST_ITEM_GROUP)));
-    public static final RegistryObject<Item> ALTOVER_TELEPORTER = register("altover_teleporter", () -> new BlockItem(ModBlocks.ALTOVER_PORTAL.get(), new Item.Properties().group(DIMTEST_ITEM_GROUP)));
+    public static final RegistryObject<Item> CAVE_PORTAL = register("cave_portal", () -> new BlockItem(ModBlocks.CAVE_PORTAL.get(), new Item.Properties().group(DIMTEST_ITEM_GROUP)));
+    public static final RegistryObject<Item> ALTOVER_PORTAL = register("altover_portal", () -> new BlockItem(ModBlocks.ALTOVER_PORTAL.get(), new Item.Properties().group(DIMTEST_ITEM_GROUP)));
+    public static final RegistryObject<Item> DIMX_PORTAL = register("dimx_portal", () -> new BlockItem(ModBlocks.DIMX_PORTAL.get(), new Item.Properties().group(DIMTEST_ITEM_GROUP)));
 
     public static <I extends Item> RegistryObject<I> register(String name, Supplier<I> item) {
         return ITEMS.register(name, item);

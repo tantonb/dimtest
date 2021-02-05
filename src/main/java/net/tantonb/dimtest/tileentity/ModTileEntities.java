@@ -20,6 +20,7 @@ public class ModTileEntities {
 
     public static final RegistryObject<TileEntityType<CavePortalTE>> CAVE_PORTAL_TE = TILE_ENTITIES.register("cave_portal", () -> TileEntityType.Builder.create(CavePortalTE::new, ModBlocks.CAVE_PORTAL.get()).build(null));
     public static final RegistryObject<TileEntityType<AltoverPortalTE>> ALTOVER_PORTAL_TE = TILE_ENTITIES.register("altover_portal", () -> TileEntityType.Builder.create(AltoverPortalTE::new, ModBlocks.ALTOVER_PORTAL.get()).build(null));
+    public static final RegistryObject<TileEntityType<DimxPortalTE>> DIMX_PORTAL_TE = TILE_ENTITIES.register("dimx_portal", () -> TileEntityType.Builder.create(DimxPortalTE::new, ModBlocks.DIMX_PORTAL.get()).build(null));
     public static final RegistryObject<TileEntityType<PortalTE>> PORTAL_TE = TILE_ENTITIES.register("portal", () -> TileEntityType.Builder.create(PortalTE::new, ModBlocks.CAVE_PORTAL.get(), ModBlocks.ALTOVER_PORTAL.get()).build(null));
 
     public static void register(IEventBus modBus) {

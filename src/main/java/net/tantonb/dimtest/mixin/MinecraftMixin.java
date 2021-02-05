@@ -2,12 +2,16 @@ package net.tantonb.dimtest.mixin;
 
 import net.tantonb.dimtest.DimTestMod;
 import net.minecraft.client.Minecraft;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Allow experimental world warning to be suppressed, credit to henkelmax/advanced_mining_dimension:
@@ -21,6 +25,9 @@ public abstract class MinecraftMixin {
             name = "flag1"
     )
     private boolean setFlag(boolean flag) {
+
+        LOGGER.info(" ***** in MinecraftMixin.setFlag()...");
+
         if (DimTestMod.CLIENT_CONFIG.showCustomWorldWarning.get()) {
             return flag;
         }

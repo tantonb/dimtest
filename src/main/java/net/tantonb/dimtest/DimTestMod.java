@@ -1,5 +1,6 @@
 package net.tantonb.dimtest;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -9,7 +10,7 @@ import net.tantonb.dimtest.blocks.ModBlocks;
 import net.tantonb.dimtest.config.ClientConfig;
 import net.tantonb.dimtest.config.DimTestConfig;
 import net.tantonb.dimtest.config.ServerConfig;
-import net.tantonb.dimtest.dimensions.ModDimensions;
+import net.tantonb.dimtest.world.ModDimensions;
 import net.tantonb.dimtest.items.ModItems;
 import net.tantonb.dimtest.tileentity.ModTileEntities;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +25,9 @@ public class DimTestMod
 
     public static ServerConfig SERVER_CONFIG;
     public static ClientConfig CLIENT_CONFIG;
+
+    // use ResourceLocation as id
+    public static final ResourceLocation resloc(String name) { return new ResourceLocation(DimTestMod.MODID, name);}
 
     public DimTestMod() {
         LOGGER.info("DimTestMod instantiation...");
@@ -47,6 +51,6 @@ public class DimTestMod
 
     private void setupCommon(final FMLCommonSetupEvent event) {
         LOGGER.debug("Handling common setup event: {}", event);
-        event.enqueueWork(ModDimensions::setupDimensions);
+        //event.enqueueWork(ModDimensions::setupDimensions);
     }
 }

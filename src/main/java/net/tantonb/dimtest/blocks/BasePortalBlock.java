@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.tantonb.dimtest.dimensions.PortalSender;
+import net.tantonb.dimtest.world.PortalSender;
 
 import javax.annotation.Nonnull;
 
@@ -127,7 +127,7 @@ abstract public class BasePortalBlock extends Block {
         // fetch remote world instance using the determined key
         ServerWorld remoteWorld = player.server.getWorld(remoteKey);
         if (remoteWorld == null) {
-            LOGGER.error("Could not find destination world '{}'", remoteKey.getRegistryName());
+            LOGGER.error("Could not find destination world '{}'", remoteKey);
             return null;
         }
         return remoteWorld;

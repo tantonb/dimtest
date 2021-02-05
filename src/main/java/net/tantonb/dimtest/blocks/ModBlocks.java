@@ -14,6 +14,7 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> CAVE_PORTAL = register("cave_portal", CavePortalBlock::new);
     public static final RegistryObject<Block> ALTOVER_PORTAL = register("altover_portal", AltoverPortalBlock::new);
+    public static final RegistryObject<Block> DIMX_PORTAL = register("dimx_portal", DimxPortalBlock::new);
 
     public static <B extends Block> RegistryObject<B> register(String name, Supplier<B> block) {
         return BLOCKS.register(name, block);
