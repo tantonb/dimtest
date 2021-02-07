@@ -16,9 +16,14 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.tantonb.dimtest.world.dimx.DimxBiomes;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @EventBusSubscriber(modid = DimTestMod.MODID, bus = Bus.MOD)
 public class ModRegistration {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @SubscribeEvent
     public static void onRegisterSounds(RegistryEvent.Register<SoundEvent> event)
     {
@@ -76,7 +81,7 @@ public class ModRegistration {
 
     public static <T extends IForgeRegistryEntry<T>> void register(IForgeRegistry<T> registry, String name, T object)
     {
-        object.setRegistryName(DimTestMod.resloc(name));
+        object.setRegistryName(DimTestMod.resLoc(name));
         registry.register(object);
     }
 }

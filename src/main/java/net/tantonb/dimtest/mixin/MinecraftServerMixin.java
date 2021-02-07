@@ -1,5 +1,10 @@
 package net.tantonb.dimtest.mixin;
 
+import net.minecraft.util.registry.MutableRegistry;
+import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.world.Dimension;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.DimensionSettings;
 import net.tantonb.dimtest.world.ModDimensions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +20,8 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.storage.IServerConfiguration;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerMixin
-{
+public class MinecraftServerMixin {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Shadow
@@ -32,15 +37,13 @@ public class MinecraftServerMixin
      * MinecraftServer#func_240800_l__
      */
     @Inject(at = @At("HEAD"), method = "func_240800_l__()V")
-    private void initMinecraftServer(CallbackInfo callback)
-    {
-        LOGGER.info("The dimension settings seed is....{}", this.serverConfig.getDimensionGeneratorSettings().getSeed());
+    private void initMinecraftServer(CallbackInfo callback) {
 
-        ModDimensions.initFromMixin(
-                this.serverConfig.getDimensionGeneratorSettings().func_236224_e_(),
-                //this.field_240767_f_.getRegistry(Registry.DIMENSION_TYPE_KEY),
-                this.field_240767_f_.getRegistry(Registry.BIOME_KEY),
-                this.field_240767_f_.getRegistry(Registry.NOISE_SETTINGS_KEY),
-                this.serverConfig.getDimensionGeneratorSettings().getSeed());
+        long seed = this.serverConfig.getDimensionGeneratorSettings().getSeed();
+        MutableRegistry<Biome> biomeRegistry = this.field_240767_f_.getRegistry(Registry.BIOME_KEY);
+        MutableRegistry<DimensionSettings> dimensionSettingsRegistry = this.field_240767_f_.getRegistry(Registry.NOISE_SETTINGS_KEY);
+        SimpleRegistry<Dimension> dimensionRegistry = this.serverConfig.getDimensionGeneratorSettings().func_236224_e_();
+
+        ModDimensions.register(seed, biomeRegistry, dimensionSettingsRegistry, dimensionRegistry);
     }
 }

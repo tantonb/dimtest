@@ -91,7 +91,7 @@ public class DimxBiomeDataProvider extends BiomeProvider
 
         public static void init()
         {
-            BIOMES.put(DimTestMod.resloc("hills"), HILLS); // 329011
+            BIOMES.put(DimTestMod.resLoc("hills"), HILLS); // 329011
         }
 
         /**

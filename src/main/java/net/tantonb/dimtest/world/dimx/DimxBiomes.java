@@ -13,7 +13,6 @@ import net.minecraft.world.gen.surfacebuilders.SurfaceBuilderConfig;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.tantonb.dimtest.DimTestMod;
-import net.tantonb.dimtest.world.ModDimensions;
 import net.tantonb.dimtest.ModRegistration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,9 +24,10 @@ public class DimxBiomes {
     public static final Biome HILLS = DimxBiomeDataProvider.Makers.HILLS;
 
     public static void init(Register<Biome> event) {
+
         LOGGER.info(" *** initializing dimx biomes...");
+
         IForgeRegistry<Biome> registry = event.getRegistry();
-        ModDimensions.initNoiseSettings();
         register(registry, "hills", HILLS);
         Registry.register(Registry.BIOME_PROVIDER_CODEC, "dimx_multi_noise", DimxBiomeProvider.dimxProviderCodec);
     }
@@ -42,7 +42,7 @@ public class DimxBiomes {
     }
 
     public static class Keys {
-        public static final RegistryKey<Biome> HILLS = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, DimTestMod.resloc("hills"));
+        public static final RegistryKey<Biome> HILLS = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, DimTestMod.resLoc("hills"));
 
         public static RegistryKey<Biome> getKeyFromBiome(World world, Biome biomeIn) {
             Optional<RegistryKey<Biome>> biome = world.func_241828_r().getRegistry(Registry.BIOME_KEY).getOptionalKey(biomeIn);

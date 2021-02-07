@@ -10,9 +10,9 @@ import net.tantonb.dimtest.blocks.ModBlocks;
 import net.tantonb.dimtest.config.ClientConfig;
 import net.tantonb.dimtest.config.DimTestConfig;
 import net.tantonb.dimtest.config.ServerConfig;
-import net.tantonb.dimtest.world.ModDimensions;
 import net.tantonb.dimtest.items.ModItems;
 import net.tantonb.dimtest.tileentity.ModTileEntities;
+import net.tantonb.dimtest.world.ModDimensions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,8 +26,10 @@ public class DimTestMod
     public static ServerConfig SERVER_CONFIG;
     public static ClientConfig CLIENT_CONFIG;
 
-    // use ResourceLocation as id
-    public static final ResourceLocation resloc(String name) { return new ResourceLocation(DimTestMod.MODID, name);}
+    // used for ids, generate resource location using modid for namespace
+    public static final ResourceLocation resLoc(String name) {
+        return new ResourceLocation(DimTestMod.MODID, name);
+    }
 
     public DimTestMod() {
         LOGGER.info("DimTestMod instantiation...");
@@ -40,6 +42,7 @@ public class DimTestMod
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModTileEntities.register(modEventBus);
+        ModDimensions.registerSettings();
 
         // load mod configuration
         DimTestConfig config = DimTestConfig.init();
